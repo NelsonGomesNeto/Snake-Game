@@ -7,6 +7,9 @@ import java.awt.FontMetrics;
 import java.awt.Graphics;
 import java.awt.Point;
 import java.awt.Toolkit;
+import java.io.FileNotFoundException;
+import java.io.FileReader;
+import java.util.Scanner;
 import logic.Keys;
 import logic.SnakeGame;
 
@@ -64,11 +67,31 @@ public class SnakeWindow extends JPanel {
     }
 
     private void displayGameOver(Graphics g) {
+        /* Display Death */
         String msg = "You Died";
         Font font = new Font("Times New Roman", Font.PLAIN, 32);
         FontMetrics metrics = getFontMetrics(font);
         g.setColor(Color.RED);
         g.setFont(font);
         g.drawString(msg, (WINDOW_WIDTH - metrics.stringWidth(msg)) / 2, WINDOW_HEIGHT / 2);
+
+        /* Display Score */
+        String scoreMsg = " Score: " + snakeGame.getSnake().getSegmentQueue().size();
+        scoreMsg += "  High Score: " + readHighScore();
+        font = new Font("Times New Roman", Font.PLAIN, 14);
+        metrics = getFontMetrics(font);
+        g.setColor(Color.WHITE);
+        g.setFont(font);
+        g.drawString(scoreMsg, (WINDOW_WIDTH - metrics.stringWidth(scoreMsg)) / 2, (3 * WINDOW_HEIGHT) / 4);
+    }
+
+    private String readHighScore() {
+        try {
+            Scanner in = new Scanner(new FileReader("src/resources/highScore.txt"));
+            return in.next();
+        } catch (FileNotFoundException e) {
+            System.out.println("Unexpected Exception: " + e.toString());
+        }
+        return "Not found";
     }
 }
