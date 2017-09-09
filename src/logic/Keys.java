@@ -34,7 +34,7 @@ public class Keys extends KeyAdapter {
         } else if (isEscKey(key) && snakeGame.getGameState() == GameState.PAUSED) {
             snakeGame.setGameState(GameState.IN_GAME);
         } else if (isEscKey(key) && snakeGame.getGameState() == GameState.GAME_OVER) {
-            snakeGame.reset();
+            snakeGame.startNewGame();
         }
     }
 

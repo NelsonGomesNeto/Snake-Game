@@ -2,6 +2,8 @@ package view;
 
 import data.GameState;
 import data.Snake;
+import java.awt.Font;
+import java.awt.FontMetrics;
 import java.awt.Graphics;
 import java.awt.Point;
 import java.awt.Toolkit;
@@ -27,9 +29,9 @@ public class SnakeWindow extends JPanel {
         setBackground(Color.BLACK);
         setFocusable(true);
         setPreferredSize(new Dimension(WINDOW_WIDTH, WINDOW_HEIGHT));
-        snakeGame.initialize(this);
+        snakeGame.setWindow(this);
         addKeyListener(new Keys(snakeGame));
-        snakeGame.start();
+        snakeGame.startNewGame();
     }
 
     @Override
@@ -38,20 +40,35 @@ public class SnakeWindow extends JPanel {
         draw(g);
     }
 
-    void draw(Graphics g) {
+    private void draw(Graphics g) {
         if (snakeGame.getGameState() == GameState.IN_GAME) {
             Snake snake = snakeGame.getSnake();
             Point foodPosition = snakeGame.getFoodPosition();
             g.setColor(Color.WHITE);
-            g.fillOval(foodPosition.x, foodPosition.y, PIXEL_SIZE, PIXEL_SIZE);
-
-            //draw snake
-            for (Point p : snake.getSegmentQueue()) {
-                g.fillRect(p.x, p.y, PIXEL_SIZE, PIXEL_SIZE);
-            }
+            drawFood(g, foodPosition);
+            drawSnake(g, snake);
             Toolkit.getDefaultToolkit().sync();
         } else if (snakeGame.getGameState() == GameState.GAME_OVER) {
-            //end game
+            displayGameOver(g);
         }
+    }
+
+    private void drawFood(Graphics g, Point foodPosition) {
+        g.fillOval(foodPosition.x, foodPosition.y, PIXEL_SIZE, PIXEL_SIZE);
+    }
+
+    private void drawSnake(Graphics g, Snake snake) {
+        for (Point p : snake.getSegmentQueue()) {
+            g.fillRect(p.x, p.y, PIXEL_SIZE, PIXEL_SIZE);
+        }
+    }
+
+    private void displayGameOver(Graphics g) {
+        String msg = "You Died";
+        Font font = new Font("Times New Roman", Font.PLAIN, 32);
+        FontMetrics metrics = getFontMetrics(font);
+        g.setColor(Color.RED);
+        g.setFont(font);
+        g.drawString(msg, (WINDOW_WIDTH - metrics.stringWidth(msg)) / 2, WINDOW_HEIGHT / 2);
     }
 }

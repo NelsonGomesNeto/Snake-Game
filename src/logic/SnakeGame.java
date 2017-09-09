@@ -18,13 +18,12 @@ public class SnakeGame implements ActionListener {
     private GameState gameState;
     private Snake snake;
     private Point foodPosition;
-    private final int DELAY = 50;
 
     public GameState getGameState() {
         return gameState;
     }
 
-    public void setGameState(GameState gameState) {
+    void setGameState(GameState gameState) {
         this.gameState = gameState;
     }
 
@@ -36,23 +35,15 @@ public class SnakeGame implements ActionListener {
         return foodPosition;
     }
 
-    public void initialize(JPanel window) {
+    public void setWindow(JPanel window) {
         this.window = window;
+    }
+
+    public void startNewGame() {
         snake = new Snake();
         foodPosition = getRandomPosition();
         gameState = GameState.IN_GAME;
-        timer = new Timer(DELAY, this);
-    }
-
-    public void reset() {
-        snake = new Snake();
-        foodPosition = getRandomPosition();
-        gameState = GameState.IN_GAME;
-        timer = new Timer(DELAY, this);
-        timer.start();
-    }
-
-    public void start() {
+        timer = new Timer(50, this);
         timer.start();
     }
 
@@ -64,9 +55,10 @@ public class SnakeGame implements ActionListener {
         }
     }
 
-    public void updateGame() {
+    private void updateGame() {
         checkFood();
-        checkCollision();
+        checkSelfCollision();
+        checkWallCollision();
         snake.move();
     }
 
@@ -77,15 +69,25 @@ public class SnakeGame implements ActionListener {
         }
     }
 
-    private void checkCollision() {
+    private void checkSelfCollision() {
         snake.getSegmentQueue().stream()
                 .filter(p -> Collections.frequency(snake.getSegmentQueue(), p) > 1)
                 .findAny()
                 .ifPresent(p -> {
-                    System.out.println("GAME OVER: Collision at " + p.toString());
                     timer.stop();
                     gameState = GameState.GAME_OVER;
                 });
+    }
+
+    private void checkWallCollision() {
+        Point head = snake.getHead();
+        if (head.x < 0
+                || head.x > SnakeWindow.WINDOW_WIDTH
+                || head.y < 0
+                || head.y > SnakeWindow.WINDOW_HEIGHT) {
+            timer.stop();
+            gameState = GameState.GAME_OVER;
+        }
     }
 
     private Point getRandomPosition() {
