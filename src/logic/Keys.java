@@ -19,13 +19,13 @@ public class Keys extends KeyAdapter {
         int key = e.getKeyCode();
         Snake snake = snakeGame.getSnake();
 
-        if (isLeftKey(key) && !snake.isMovingRight()) {
+        if (isLeftKey(key)) {
             snake.setDirection(Direction.LEFT);
-        } else if (isRightKey(key) && !snake.isMovingLeft()) {
+        } else if (isRightKey(key)) {
             snake.setDirection(Direction.RIGHT);
-        } else if (isUpKey(key) && !snake.isMovingDown()) {
+        } else if (isUpKey(key)) {
             snake.setDirection(Direction.UP);
-        } else if (isDownKey(key) && !snake.isMovingUp()) {
+        } else if (isDownKey(key)) {
             snake.setDirection(Direction.DOWN);
         }
 

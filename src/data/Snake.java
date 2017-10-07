@@ -2,6 +2,9 @@ package data;
 
 import java.util.LinkedList;
 import java.util.Queue;
+
+import data.DirectionState.DirectionState;
+import data.DirectionState.Left;
 import view.SnakeWindow;
 import java.awt.Point;
 
@@ -9,6 +12,7 @@ public class Snake {
 
     private Queue<Point> segmentQueue = new LinkedList<>();
     private Point head;
+    public DirectionState directionState = new Left();
     private Direction direction;
     private int segmentsToGrow = 0;
 
@@ -20,9 +24,7 @@ public class Snake {
         return head;
     }
 
-    public void setDirection(Direction direction) {
-        this.direction = direction;
-    }
+    public void setDirection(Direction direction) { this.directionState = directionState.turn(direction); }
 
     public Snake() {
         int midX = SnakeWindow.WINDOW_WIDTH / 2;
@@ -45,31 +47,10 @@ public class Snake {
     }
 
     private void getNewPosition(Point p) {
-        if (direction == Direction.LEFT) {
-            p.x -= SnakeWindow.PIXEL_SIZE;
-        } else if (direction == Direction.RIGHT) {
-            p.x += SnakeWindow.PIXEL_SIZE;
-        } else if (direction == Direction.UP) {
-            p.y -= SnakeWindow.PIXEL_SIZE;
-        } else if (direction == Direction.DOWN) {
-            p.y += SnakeWindow.PIXEL_SIZE;
+        if (directionState != null) {
+            p.x += directionState.getNextX() * SnakeWindow.PIXEL_SIZE;
+            p.y += directionState.getNextY() * SnakeWindow.PIXEL_SIZE;
         }
-    }
-
-    public boolean isMovingLeft() {
-        return direction == Direction.LEFT;
-    }
-
-    public boolean isMovingRight() {
-        return direction == Direction.RIGHT;
-    }
-
-    public boolean isMovingUp() {
-        return direction == Direction.UP;
-    }
-
-    public boolean isMovingDown() {
-        return direction == Direction.DOWN;
     }
 
     public void addSegmentsToGrow() {
